@@ -10,7 +10,7 @@
   "license": "MIT",
   "dependencies": {
     "axios": "^1.6.8",
-    "express": "*",
+    "express": "^4.19.2",
     "jsonwebtoken": "^9.0.2",
     "mssql": "^7.0.0"
   },

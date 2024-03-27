@@ -1,5 +1,6 @@
 const express = require('express');
 const http = require('http');
+const path = require('path'); // Import the 'path' module
 const qs = require('querystring');
 const sql = require('mssql');
 
@@ -19,6 +20,11 @@ const config = {
 
 // Serve static files from the "public" directory
 app.use(express.static('public'));
+
+// Serve the HTML form at the root URL
+app.get('/', (req, res) => {
+    res.sendFile(path.join(__dirname, 'public', 'Form.html'));
+});
 
 // Create HTTP server
 const server = http.createServer(app);
