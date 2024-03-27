@@ -9,6 +9,9 @@
   "author": "Your Name",
   "license": "MIT",
   "dependencies": {
+    "axios": "^1.6.8",
+    "express": "*",
+    "jsonwebtoken": "^9.0.2",
     "mssql": "^7.0.0"
   },
   "keywords": []
