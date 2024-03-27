@@ -15,7 +15,10 @@ const config = {
 
 
 // Create HTTP server
+// Create HTTP server
 const server = http.createServer((req, res) => {
+    console.log(`Incoming request: ${req.method} ${req.url}`); // Add this line
+
     if (req.method === 'POST' && req.url === '/process_form') {
         let body = '';
 
@@ -60,6 +63,7 @@ const server = http.createServer((req, res) => {
         res.end('Not Found');
     }
 });
+
 
 // Define the port to listen on
 const PORT = process.env.PORT || 3000;
