@@ -10,5 +10,6 @@
   "license": "MIT",
   "dependencies": {
     "mssql": "^7.0.0"
-  }
+  },
+  "keywords": []
 }
