@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en"></html>
+
+<head>
+  
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+     
+    
+<title>New Employee Details</title>
+</head>
+<body>
+
+<h1>Please fill all the required fields</h1>
+<p> Plesae contact HR in case of any issues at hr@gmail.com</p>
+<form action="http://localhost:3000/process_form" method="post" onsubmit="return validateForm()">
+    <label for="name">Name:</label><br>
+    <input type="text" id="name" name="name" required><br><br>
+
+    <label for="email">Email:</label><br>
+    <input type="email" id="email" name="email" required><br><br>
+
+    <label for="phone">Mobile Number:</label><br>
+    <input type="number" id="phone" name="phone" required><br><br>
+
+    <input type="submit" value="Submit">
+</form>
+
+<script>
+    function validateForm() {
+        var phoneInput = document.getElementById("phone");
+        var phoneNumber = phoneInput.value.trim();
+
+        if (isNaN(phoneNumber)) {
+            alert("Please enter a valid numeric phone number");
+            return false;
+        }
+
+        return true;
+    }
+</script>
+
+</body>
+</html>
