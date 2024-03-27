@@ -1,0 +1,14 @@
+{
+  "name": "form-submission-app",
+  "version": "1.0.0",
+  "description": "An application for processing form submissions and storing data in a SQL Server database.",
+  "main": "app.js",
+  "scripts": {
+    "start": "node app.js"
+  },
+  "author": "Your Name",
+  "license": "MIT",
+  "dependencies": {
+    "mssql": "^7.0.0"
+  }
+}
