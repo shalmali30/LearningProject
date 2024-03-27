@@ -1,6 +1,10 @@
+const express = require('express');
 const http = require('http');
 const qs = require('querystring');
 const sql = require('mssql');
+
+const app = express();
+const PORT = process.env.PORT || 3000;
 
 // Configure SQL Server connection
 const config = {
@@ -13,62 +17,57 @@ const config = {
     }
 };
 
+// Serve static files from the "public" directory
+app.use(express.static('public'));
 
 // Create HTTP server
-// Create HTTP server
-const server = http.createServer((req, res) => {
-    console.log(`Incoming request: ${req.method} ${req.url}`); // Add this line
+const server = http.createServer(app);
 
-    if (req.method === 'POST' && req.url === '/process_form') {
-        let body = '';
+// Define POST endpoint for form processing
+app.post('/process_form', (req, res) => {
+    console.log(`Incoming request: ${req.method} ${req.url}`);
 
-        // Collect request data
-        req.on('data', chunk => {
-            body += chunk.toString();
+    let body = '';
+
+    // Collect request data
+    req.on('data', chunk => {
+        body += chunk.toString();
+    });
+
+    // Process form data
+    req.on('end', () => {
+        const formData = qs.parse(body);
+
+        // Connect to SQL Server and insert data
+        sql.connect(config, err => {
+            if (err) {
+                console.error('Database connection failed:', err);
+                res.statusCode = 500;
+                res.end('Internal Server Error');
+            } else {
+                const request = new sql.Request();
+                request.input('name', sql.NVarChar, formData.name);
+                request.input('email', sql.NVarChar, formData.email);
+                request.input('phone', sql.NVarChar, formData.phone);
+                request.query('INSERT INTO users (name, email, phone) VALUES (@name, @email, @phone)',
+                    (err, result) => {
+                        if (err) {
+                            console.error('Error executing query:', err);
+                            res.statusCode = 500;
+                            res.end('Internal Server Error');
+                        } else {
+                            console.log('New record created successfully');
+                            res.statusCode = 200;
+                            res.end('Form submitted successfully');
+                        }
+                        sql.close();
+                    });
+            }
         });
-
-        // Process form data
-        req.on('end', () => {
-            const formData = qs.parse(body);
-
-            // Connect to SQL Server and insert data
-            sql.connect(config, err => {
-                if (err) {
-                    console.error('Database connection failed:', err);
-                    res.statusCode = 500;
-                    res.end('Internal Server Error');
-                } else {
-                    const request = new sql.Request();
-                    request.input('name', sql.NVarChar, formData.name);
-                    request.input('email', sql.NVarChar, formData.email);
-                    request.input('phone', sql.NVarChar, formData.phone);
-                    request.query('INSERT INTO users (name, email, phone) VALUES (@name, @email, @phone)',
-                        (err, result) => {
-                            if (err) {
-                                console.error('Error executing query:', err);
-                                res.statusCode = 500;
-                                res.end('Internal Server Error');
-                            } else {
-                                console.log('New record created successfully');
-                                res.statusCode = 200;
-                                res.end('Form submitted successfully');
-                            }
-                            sql.close();
-                        });
-                }
-            });
-        });
-    } else {
-        res.statusCode = 404;
-        res.end('Not Found');
-    }
+    });
 });
 
-
 // Define the port to listen on
-const PORT = process.env.PORT || 3000;
-
-// Start the server
 server.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`);
 });
